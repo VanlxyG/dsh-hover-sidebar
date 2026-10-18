@@ -156,7 +156,7 @@
           owned.frame.removeEventListener("transitionend", owned.finish);
           owned.frame.removeEventListener("transitioncancel", owned.finish);
           for (const [key, value] of Object.entries(owned.writes)) {
-            if (owned.frame.style.getPropertyValue(key) !== value) continue;
+            if (owned.frame.style.getPropertyValue(key) !== value || owned.frame.style.getPropertyPriority(key)) continue;
             const before = owned.before[key];
             if (before.value) owned.frame.style.setProperty(key, before.value, before.priority);
             else owned.frame.style.removeProperty(key);
@@ -250,6 +250,7 @@
             if (ours) {
               hoverOpened = !now && hoverOpened;
               pinned = source === "manual" && !now;
+              if (source === "manual" && now) suppressUntilLeave = hotAt();
             } else {
               hoverOpened = false; pinned = !now;
               suppressUntilLeave = now && hotAt();
@@ -333,7 +334,7 @@
           listen(document, "focusin", queue); listen(document, "focusout", queue);
           listen(document, "keydown", (e) => {
             inputMode = "keyboard";
-            if (e.key === "Escape" && hoverOpened && !pinned) {
+            if (e.key === "Escape" && hoverOpened && !pinned && !modalOpen() && !popupProtected()) {
               clearTimer("open"); clearTimer("close"); suppressUntilLeave = hotAt();
               requestToggle("collapsed", "escape");
             }

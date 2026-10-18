@@ -23,6 +23,9 @@ function check(condition, message, detail) {
 try {
   runtime = await launchBrowser();
   const { page } = runtime;
+  // CI Windows images can have reduced motion enabled at OS level. Test the
+  // animated contract explicitly, then exercise the reduced-motion branch below.
+  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
   const ev = (s) => page.evaluate(s);
   const move = async (x, y = 400) => page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x, y, button: "none" });
   const state = () => ev("__dshHoverSidebar.state()");
@@ -115,7 +118,7 @@ try {
   check(!(await ev("__dshHoverSidebar.anim().on")), "system reduced-motion disables own animation");
   await ev("fixture.toggle()"); await sleep(60);
   check(!(await ev("__dshHoverSidebar.anim().waapi")), "system reduced-motion disables host animation");
-  await page.send("Emulation.setEmulatedMedia", { features: [] });
+  await page.send("Emulation.setEmulatedMedia", { features: [{ name: "prefers-reduced-motion", value: "no-preference" }] });
 
   await reset("web"); await move(35); await until("__dshHoverSidebar.state().hoverOpened"); await sleep(350);
   const artifacts = new URL("../artifacts/", import.meta.url); await mkdir(artifacts, { recursive: true });

@@ -2,7 +2,7 @@ import { spawn } from "node:child_process";
 import { existsSync } from "node:fs";
 import { mkdtemp, rm } from "node:fs/promises";
 import { tmpdir } from "node:os";
-import { join, resolve } from "node:path";
+import { basename, dirname, join, resolve } from "node:path";
 
 export const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 export class Cdp {
@@ -55,6 +55,11 @@ export async function launchBrowser() {
   ].find((p) => p && existsSync(p));
   if (!binary) throw new Error("Chromium not found. Set BROWSER_BIN to a Chrome/Edge executable.");
   const directory = await mkdtemp(join(tmpdir(), "dsh-hover-test-"));
+  async function removeProfile() {
+    const target = resolve(directory);
+    if (dirname(target) !== resolve(tmpdir()) || !basename(target).startsWith("dsh-hover-test-")) throw new Error("Refusing to remove an unexpected test directory");
+    await rm(target, { recursive: true, force: true, maxRetries: 8, retryDelay: 250 });
+  }
   const child = spawn(binary, ["--headless=new", "--remote-debugging-address=127.0.0.1", "--remote-debugging-port=0",
     `--user-data-dir=${directory}`, "--no-first-run", "--no-default-browser-check", "about:blank"],
   { windowsHide: true, stdio: ["ignore", "ignore", "pipe"] });
@@ -89,14 +94,12 @@ export async function launchBrowser() {
       if (child.exitCode === null) await Promise.race([new Promise((r) => child.once("exit", r)), sleep(3000)]);
       if (child.exitCode === null) child.kill();
       // Only this helper's freshly-created temporary directory can be removed.
-      if (resolve(directory).startsWith(resolve(tmpdir()) + (process.platform === "win32" ? "\\" : "/"))) {
-        await rm(directory, { recursive: true, force: true, maxRetries: 8, retryDelay: 250 });
-      }
+      await removeProfile();
     } };
   } catch (error) {
     browser?.close(); child.kill();
     await sleep(500);
-    await rm(directory, { recursive: true, force: true, maxRetries: 4, retryDelay: 250 });
+    await removeProfile();
     throw error;
   }
 }

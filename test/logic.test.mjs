@@ -182,3 +182,16 @@ test("debug manual toggle behaves as an explicit pinned open", () => {
   const h = harness(); h.api.toggle(); h.tick(50); h.move(1000); h.tick(1000); assert.equal(h.api.state().pinned, true);
   assert.equal(h.host.collapsed, false);
 });
+test("a new host priority is preserved even if its style value matches ours", () => {
+  const h = harness(); hover(h);
+  h.host.frame.style.setProperty("will-change", "grid-template-columns", "important"); h.tick();
+  assert.equal(h.host.frame.style.getPropertyPriority("will-change"), "important");
+});
+test("debug manual close on the edge does not spring back", () => {
+  const h = harness(); h.api.toggle(); h.tick(50); h.move(3); h.tick(50);
+  h.api.toggle(); h.tick(1000); assert.equal(h.host.collapsed, true);
+});
+test("Escape leaves sidebar menus and modal dialogs to their owners", () => {
+  const h = harness(); hover(h); h.host.modal = true;
+  h.doc.fire("keydown", { key: "Escape" }); h.tick(); opened(h);
+});
