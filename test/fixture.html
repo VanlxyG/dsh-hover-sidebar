@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Hover Sidebar - browser contract fixture</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; width: 100%; height: 100%; font: 14px system-ui; }
+  body { background: #f8f9fc; color: #253048; }
+  #mount { width: 100%; height: 100%; }
+  .fixture_frame { display: grid; height: 100%; padding-top: 32px; position: relative; overflow: hidden; }
+  .fixture_frame::before { content: 'DeepSeek Harness · Sidebar hover contract'; position: absolute; inset: 0 0 auto; height: 32px; padding: 6px 15px; background: #e5e9f2; }
+  .fixture_sidebarCol { background: #edf0f8; min-width: 0; overflow: hidden; box-shadow: inset -1px 0 #d6ddeb; }
+  .sidebar-content { width: 280px; padding: 20px; }
+  .sidebar-content h2 { font-size: 16px; }
+  input { width: 230px; padding: 8px; margin-top: 15px; border: 1px solid #c3cce0; border-radius: 6px; }
+  button { padding: 9px 14px; border: 1px solid #c3cce0; border-radius: 8px; background: white; cursor: pointer; }
+  main { padding: 40px; min-width: 0; }
+  main h1 { font-size: 30px; letter-spacing: -1px; }
+  main p { max-width: 550px; line-height: 1.8; color: #5c6880; }
+  .fixture_frame[data-rightbar-collapsed] { transition: none; }
+  #portal { position: absolute; left: 310px; top: 150px; padding: 20px; background: white; border: 1px solid #c3cce0; border-radius: 8px; }
+</style>
+<div id="mount"></div>
+<script>
+  window.fixture = {
+    rail: new URLSearchParams(location.search).get('shell') === 'web' ? 56 : 0,
+    collapsed: true, calls: 0, effects: [], silent: false,
+    render() {
+      const frame = document.getElementById('frame');
+      frame.toggleAttribute('data-sidebar-collapsed', this.collapsed);
+      frame.style.gridTemplateColumns = `${this.collapsed ? this.rail : 280}px minmax(0px, 1fr) minmax(0px, 0px)`;
+    },
+    toggle() { this.calls++; if (!this.silent) { this.collapsed = !this.collapsed; this.render(); } },
+    build() {
+      document.getElementById('mount').innerHTML = '<div id="frame" class="fixture_frame" data-rightbar-collapsed><aside class="fixture_sidebarCol"><div class="sidebar-content"><h2>侧边栏</h2><button id="item">会话列表</button><input id="search" placeholder="搜索会话" aria-label="搜索会话"></div></aside><main><button id="manual">展开 / 收起左栏</button><h1>悬停展开，移开收起</h1><p>鼠标移到左边缘，即可暂时展开侧边栏。手动打开的侧边栏保持展开。按 Escape 关闭临时展开的侧边栏。</p></main><div></div></div>';
+      document.getElementById('manual').onclick = () => this.toggle();
+      this.render();
+    },
+    mount() { this.plugin.apply({ layout: { toggleSidebar: () => this.toggle() }, effect: fn => { this.effects.push(fn()); } }); },
+  };
+  window.__ModuleLoader__ = { load(mod) { fixture.plugin = mod.factory(); } };
+  fixture.build();
+</script>
+<script src="/client.js"></script>
+<script>fixture.mount();</script>
+</html>

@@ -1,0 +1,16 @@
+node_modules/
+dist/
+artifacts/
+coverage/
+*.log
+*.out
+.env
+.env.*
+!.env.example
+.credentials*
+*cookie*
+boot.html
+probe-*
+auth-*
+.DS_Store
+Thumbs.db

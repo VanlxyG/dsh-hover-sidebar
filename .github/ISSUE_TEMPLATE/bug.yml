@@ -1,0 +1,22 @@
+name: Bug report / 问题反馈
+description: Report sidebar behavior or compatibility problems.
+body:
+  - type: markdown
+    attributes:
+      value: Do not include credentials, cookies, conversation logs or full profile files. / 请勿附带凭据、Cookie、会话日志或完整 profile。
+  - type: input
+    id: versions
+    attributes:
+      label: DSH, plugin and OS versions / 版本与操作系统
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Reproduction steps and expected behavior / 复现步骤与预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: state
+    attributes:
+      label: Optional __dshHoverSidebar.state() output / 可选诊断状态

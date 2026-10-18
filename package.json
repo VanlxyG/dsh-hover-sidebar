@@ -1,0 +1,49 @@
+{
+  "name": "dsh-hover-sidebar",
+  "version": "0.2.0",
+  "type": "module",
+  "description": "Hover to reveal the DeepSeek Harness left sidebar; leave to hide, with safe manual pinning. / DeepSeek Harness 左栏悬停展开、移开收起。",
+  "license": "MIT",
+  "author": "VanlxyG",
+  "repository": { "type": "git", "url": "git+https://github.com/VanlxyG/dsh-hover-sidebar.git" },
+  "homepage": "https://github.com/VanlxyG/dsh-hover-sidebar#readme",
+  "bugs": { "url": "https://github.com/VanlxyG/dsh-hover-sidebar/issues" },
+  "keywords": ["deepseek", "harness", "dsh", "dsh-plugin", "sidebar", "hover", "auto-hide"],
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "test:browser": "node test/browser.mjs",
+    "check": "node scripts/check.mjs",
+    "pack:release": "node scripts/pack.mjs"
+  },
+  "main": "index.js",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./package.json": "./package.json",
+    "./cordis.patch.yml": "./cordis.patch.yml",
+    "./locale/*.json": "./locale/*.json"
+  },
+  "files": [
+    "index.js",
+    "client.js",
+    "cordis.patch.yml",
+    "locale/*.json",
+    "README.md",
+    "README.en.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "manifestVersion": 1,
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-ui-layout"
+      ]
+    }
+  }
+}
