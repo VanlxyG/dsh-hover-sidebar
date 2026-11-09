@@ -293,6 +293,9 @@
         }
         function onPointer(e) {
           if (e.pointerType === "touch" || !Number.isFinite(e.clientX) || !Number.isFinite(e.clientY)) return;
+          // A live native drag suppresses pointer events, so receiving one means
+          // the drag already ended even when its dragend never arrived.
+          if (dragging && (e.type === "pointerdown" || !(e.buttons > 0))) dragging = false;
           pointerKnown = true; lastX = e.clientX; lastY = e.clientY; buttons = e.buttons || 0;
           if (e.type === "pointerdown") {
             inputMode = "pointer"; sidebarInteraction = !!column?.contains(e.target);
@@ -303,8 +306,13 @@
         function leaveWindow() {
           // Reset while collapsed too: cancelled intent must re-arm on re-entry.
           pointerKnown = false; lastX = lastY = -1; buttons = 0;
-          inHot = false; suppressUntilLeave = false; dragging = false; sidebarInteraction = false;
-          clearTimer("open"); clearTimer("close"); scheduleClose();
+          inHot = false; suppressUntilLeave = false; sidebarInteraction = false;
+          clearTimer("open"); clearTimer("close");
+          // A native drag captures the pointer and fires pointercancel plus a
+          // pointerleave chain before dragend. Closing here would remove the
+          // drop target the user is still dragging over, so wait for dragend.
+          if (dragging) return;
+          scheduleClose();
         }
 
         function deactivate() {
@@ -340,8 +348,23 @@
             }
             queue();
           });
-          listen(document, "dragstart", () => { dragging = true; clearTimer("open"); clearTimer("close"); releaseAnimation(); });
-          listen(document, "dragend", () => { dragging = false; queue(); });
+          listen(document, "dragstart", (e) => {
+            dragging = true;
+            if (Number.isFinite(e?.clientX) && Number.isFinite(e?.clientY)) {
+              pointerKnown = true; lastX = e.clientX; lastY = e.clientY;
+            }
+            clearTimer("open"); clearTimer("close"); releaseAnimation();
+          });
+          listen(document, "dragend", (e) => {
+            if (!dragging) { queue(); return; }
+            dragging = false;
+            // Adopt the drop position: the panel stays open when the drag ended
+            // inside it, and the normal leave path closes it when the pointer left.
+            if (Number.isFinite(e?.clientX) && Number.isFinite(e?.clientY)) {
+              pointerKnown = true; lastX = e.clientX; lastY = e.clientY; buttons = 0;
+            }
+            queue();
+          });
           if (typeof reducedMotion?.addEventListener === "function") listen(reducedMotion, "change", () => { releaseAnimation(); queue(); });
           treeObserver = new MutationObserver(() => {
             if (!frame?.isConnected || !column?.isConnected || column.parentElement !== frame || sidebarInteraction || (inHot && collapsed())) queue();
@@ -370,7 +393,7 @@
         const api = {
           version: "0.2.0",
           state: () => ({ status, collapsed: collapsed(), hoverOpened, pinned, inHot, suppressUntilLeave,
-            expected, openPending: !!openTimer, closePending: !!closeTimer, running }),
+            dragging, expected, openPending: !!openTimer, closePending: !!closeTimer, running }),
           options: () => ({ ...options }),
           anim: () => ({ on: !!transition, waapi: !!waapi, last: lastAnim ? { ...lastAnim } : null }),
           configure, setEnabled: (enabled) => configure({ enabled }),

@@ -79,6 +79,28 @@ try {
     check((await ev("document.getElementById('frame').getAnimations().length")) === 0, `${shell}: WAAPI cleanup`);
   }
   await reset();
+  await move(3); await until("__dshHoverSidebar.state().hoverOpened"); await sleep(320);
+  await ev("window.dragEvents = []; for (const type of ['dragstart', 'dragend']) document.addEventListener(type, () => dragEvents.push(type), true)");
+  const row = await ev("(() => { const r = document.getElementById('row-a').getBoundingClientRect(); return { x: r.left + 90, y: r.top + r.height / 2 }; })()");
+  const callsBefore = await ev("fixture.calls");
+  await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: row.x, y: row.y, button: "none" });
+  await page.send("Input.dispatchMouseEvent", { type: "mousePressed", x: row.x, y: row.y, button: "left", buttons: 1, clickCount: 1 });
+  for (const dy of [4, 10, 20, 34]) {
+    await page.send("Input.dispatchMouseEvent", { type: "mouseMoved", x: row.x, y: row.y + dy, button: "left", buttons: 1 });
+    await sleep(40);
+  }
+  await sleep(700);
+  check((await ev("dragEvents")).includes("dragstart"), "native row drag starts");
+  check(!(await state()).collapsed, "native row drag keeps the hover panel open", await state());
+  await page.send("Input.dispatchMouseEvent", { type: "mouseReleased", x: row.x, y: row.y + 34, button: "left", buttons: 0, clickCount: 1 });
+  await sleep(400);
+  check(!(await state()).collapsed, "dropping a row inside keeps the panel open");
+  check((await ev("fixture.calls")) === callsBefore, "native row drag never toggles the sidebar");
+  check(!(await state()).dragging, "drag state is released after the drop");
+  await move(900); await until("__dshHoverSidebar.state().collapsed");
+  check((await state()).collapsed, "leaving after a drop still closes");
+
+  await reset();
   await move(3); await sleep(40); await move(900); await sleep(250);
   check((await state()).collapsed, "crossing edge is ignored");
   await move(3); await sleep(45);

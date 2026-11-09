@@ -60,6 +60,48 @@ test("dragging suspends collapse and releases its animation", () => {
   assert.equal(h.api.anim().on, false); h.move(900); h.tick(1000); opened(h);
   h.drag(false); h.tick(); assert.equal(h.host.collapsed, true);
 });
+test("native row drag survives the pointercancel and pointerleave it triggers", () => {
+  const h = harness(); hover(h);
+  h.doc.fire("dragstart", { clientX: 100, clientY: 200 });
+  assert.equal(h.api.state().dragging, true);
+  // Chrome cancels the pointer and fires a pointerleave chain as the drag starts.
+  h.doc.fire("pointercancel", { clientX: 100, clientY: 200, buttons: 0 });
+  h.leave();
+  h.tick(2000);
+  opened(h);
+  h.doc.fire("dragend", { clientX: 100, clientY: 200, buttons: 0 });
+  h.tick(1000);
+  opened(h);
+  assert.equal(h.api.state().dragging, false);
+  h.move(900); h.tick(1000); assert.equal(h.host.collapsed, true);
+});
+test("a row drag that ends outside closes normally", () => {
+  const h = harness(); hover(h);
+  h.doc.fire("dragstart", { clientX: 100, clientY: 200 });
+  h.doc.fire("pointercancel", { clientX: 100, clientY: 200, buttons: 0 });
+  h.leave(); h.tick(800); opened(h);
+  h.doc.fire("dragend", { clientX: 900, clientY: 200, buttons: 0 });
+  h.tick(1000);
+  assert.equal(h.host.collapsed, true);
+});
+test("a lost dragend self-heals on the next pointer event", () => {
+  const h = harness(); hover(h);
+  h.doc.fire("dragstart", { clientX: 100, clientY: 200 });
+  h.doc.fire("pointercancel", { clientX: 100, clientY: 200, buttons: 0 });
+  h.leave(); h.tick(1500); opened(h);
+  assert.equal(h.api.state().dragging, true);
+  h.move(900, 400); h.tick(1000);
+  assert.equal(h.api.state().dragging, false);
+  assert.equal(h.host.collapsed, true);
+});
+test("an active drag never summons a collapsed panel", () => {
+  const h = harness();
+  h.doc.fire("dragstart", { clientX: 3, clientY: 400 });
+  h.move(3, 400, { buttons: 1 }); h.tick(500);
+  assert.equal(h.host.toggleCalls, 0);
+  h.doc.fire("dragend", { clientX: 3, clientY: 400, buttons: 0 }); h.tick(500);
+  opened(h);
+});
 test("disabled at startup still has a working reenable control", () => {
   const h = harness({ stored: '{"enabled":false}' }); assert.equal(h.api.state().running, false);
   assert.equal(h.listeners(), 0); h.api.setEnabled(true); hover(h);

@@ -14,6 +14,7 @@
   .sidebar-content { width: 280px; padding: 20px; }
   .sidebar-content h2 { font-size: 16px; }
   input { width: 230px; padding: 8px; margin-top: 15px; border: 1px solid #c3cce0; border-radius: 6px; }
+  .fixture_row { height: 34px; margin-top: 10px; padding: 0 10px; line-height: 34px; border: 1px solid #c3cce0; border-radius: 6px; background: #fff; cursor: grab; }
   button { padding: 9px 14px; border: 1px solid #c3cce0; border-radius: 8px; background: white; cursor: pointer; }
   main { padding: 40px; min-width: 0; }
   main h1 { font-size: 30px; letter-spacing: -1px; }
@@ -33,7 +34,7 @@
     },
     toggle() { this.calls++; if (!this.silent) { this.collapsed = !this.collapsed; this.render(); } },
     build() {
-      document.getElementById('mount').innerHTML = '<div id="frame" class="fixture_frame" data-rightbar-collapsed><aside class="fixture_sidebarCol"><div class="sidebar-content"><h2>侧边栏</h2><button id="item">会话列表</button><input id="search" placeholder="搜索会话" aria-label="搜索会话"></div></aside><main><button id="manual">展开 / 收起左栏</button><h1>悬停展开，移开收起</h1><p>鼠标移到左边缘，即可暂时展开侧边栏。手动打开的侧边栏保持展开。按 Escape 关闭临时展开的侧边栏。</p></main><div></div></div>';
+      document.getElementById('mount').innerHTML = '<div id="frame" class="fixture_frame" data-rightbar-collapsed><aside class="fixture_sidebarCol"><div class="sidebar-content"><h2>侧边栏</h2><button id="item">会话列表</button><input id="search" placeholder="搜索会话" aria-label="搜索会话"><div id="row-a" class="fixture_row" draggable="true">项目 A</div><div id="row-b" class="fixture_row" draggable="true">项目 B</div></div></aside><main><button id="manual">展开 / 收起左栏</button><h1>悬停展开，移开收起</h1><p>鼠标移到左边缘，即可暂时展开侧边栏。手动打开的侧边栏保持展开。按 Escape 关闭临时展开的侧边栏。</p></main><div></div></div>';
       document.getElementById('manual').onclick = () => this.toggle();
       this.render();
     },

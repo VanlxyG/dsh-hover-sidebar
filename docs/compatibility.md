@@ -4,10 +4,12 @@ Verified on 2026-10-18 for plugin v0.2.0.
 
 | Layer | Result | Scope |
 | --- | --- | --- |
-| Deterministic logic | 50 passed | Intent, manual pinning/dismissal, window reentry, focus, menus, dragging, configuration, failure containment, cleanup and hot replacement |
-| Isolated Chromium contract | 36 passed | Real pointer input, 0px native / 56px web tracks, intermediate animation frames, reduced motion, DOM replacement and enable/disable |
+| Deterministic logic | 54 passed | Intent, manual pinning/dismissal, window reentry, focus, menus, dragging, configuration, failure containment, cleanup and hot replacement |
+| Isolated Chromium contract | 42 passed | Real pointer input, native row drag, 0px native / 56px web tracks, intermediate animation frames, reduced motion, DOM replacement and enable/disable |
 | Real official DSH 0.2.1-rc.2 | 14 passed | Published managed package loaded once; web and native track geometry; hover open, leave close, manual pinning; browser enable/disable |
 | GitHub CI | Passed | Windows and Linux, Node.js 22 and 24; browser checks on Node.js 24; package checks and release publication |
+
+The deterministic and Chromium rows were re-run on 2026-11-09 with the native row-drag regression; the real-host row is the 2026-10-18 run.
 
 The real-host check used a disposable authenticated browser. No credentials,
 cookies, conversation data, boot HTML or host logs are part of this repository.

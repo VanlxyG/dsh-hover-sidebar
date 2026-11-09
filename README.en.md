@@ -29,7 +29,7 @@ Use managed installation so the package source and bundle survive dependency rei
 - Hover at the left edge for 120ms to open. Native shells use a 12px zone; the web shell's whole collapsed icon rail is valid.
 - Leaving the sidebar plus its 24px margin hides it after 300ms. Returning cancels closing.
 - Manual opens stay pinned. Manual closes require leaving/reentering before hover can reopen.
-- Editing, keyboard navigation, sidebar menus and dragging are protected. Touch does not trigger hovering.
+- Editing, keyboard navigation, sidebar menus and dragging are protected: a native row drag (project or session reordering) keeps the panel open until the drop. Touch does not trigger hovering.
 - Escape dismisses a temporary panel. Animations respect reduced-motion preferences.
 
 ## Compatibility
