@@ -1,6 +1,6 @@
 # Compatibility evidence
 
-Verified on 2026-10-18 for plugin v0.2.0.
+Verified on 2026-11-09 for plugin v0.2.1.
 
 | Layer | Result | Scope |
 | --- | --- | --- |

@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 0.2.1 - 2026-11-09
 
 - Keep the hover panel open while a native sidebar row drag (project or session reordering) is in flight. Chromium fires `pointercancel` and a `pointerleave` chain as soon as such a drag starts; that used to clear the drag state and close the panel mid-drag, invalidating the drop. The drag now lasts until `dragend`, adopts the drop position so the panel still closes when the pointer ends outside, and self-heals if a `dragend` is lost.
 

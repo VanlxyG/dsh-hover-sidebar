@@ -391,7 +391,7 @@
           if (window.__dshHoverSidebar === api) delete window.__dshHoverSidebar;
         }
         const api = {
-          version: "0.2.0",
+          version: "0.2.1",
           state: () => ({ status, collapsed: collapsed(), hoverOpened, pinned, inHot, suppressUntilLeave,
             dragging, expected, openPending: !!openTimer, closePending: !!closeTimer, running }),
           options: () => ({ ...options }),

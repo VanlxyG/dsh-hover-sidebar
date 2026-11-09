@@ -1,6 +1,6 @@
 {
   "name": "dsh-hover-sidebar",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "type": "module",
   "description": "Hover to reveal the DeepSeek Harness left sidebar; leave to hide, with safe manual pinning. / DeepSeek Harness 左栏悬停展开、移开收起。",
   "license": "MIT",

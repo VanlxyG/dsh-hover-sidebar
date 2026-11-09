@@ -11,7 +11,7 @@
 在官方桌面版 **设置 → 插件** 的添加插件入口，填入发行包地址：
 
 ```text
-https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.0/dsh-hover-sidebar-0.2.0.tgz
+https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.1/dsh-hover-sidebar-0.2.1.tgz
 ```
 
 也可以下载发行页中的 `.tgz`，在添加插件处选择本地包。安装后按宿主提示刷新页面或重启。
@@ -21,7 +21,7 @@ https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.0/dsh-hover-
 Web 版可用 CLI：
 
 ```sh
-dsh plugin --profile web add https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.0/dsh-hover-sidebar-0.2.0.tgz
+dsh plugin --profile web add https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.1/dsh-hover-sidebar-0.2.1.tgz
 ```
 
 桌面 profile 请使用桌面端自己的插件管理入口。**不要仅手工复制到 `node_modules`**：正式安装需要同时记录依赖、来源和 bundle；否则宿主重装依赖后可能丢包。

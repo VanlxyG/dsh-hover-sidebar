@@ -11,7 +11,7 @@ Zero runtime dependencies, build steps or install hooks. Uses the host's public 
 In the official desktop app, open **Settings → Plugins**, choose the add-plugin action and enter:
 
 ```text
-https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.0/dsh-hover-sidebar-0.2.0.tgz
+https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.1/dsh-hover-sidebar-0.2.1.tgz
 ```
 
 You can also download that package from Releases and install the local file. Follow any host refresh/restart prompt. Use the installed plugin's switch to enable or disable it.
@@ -19,7 +19,7 @@ You can also download that package from Releases and install the local file. Fol
 For a web profile:
 
 ```sh
-dsh plugin --profile web add https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.0/dsh-hover-sidebar-0.2.0.tgz
+dsh plugin --profile web add https://github.com/VanlxyG/dsh-hover-sidebar/releases/download/v0.2.1/dsh-hover-sidebar-0.2.1.tgz
 ```
 
 Use managed installation so the package source and bundle survive dependency reinstalls. Copying only to `node_modules` is insufficient. When migrating from a manually registered version, back up the profile and remove its old `hover-sidebar` insert block before installing the bundle, to avoid duplicate entries.
